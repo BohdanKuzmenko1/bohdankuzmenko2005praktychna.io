@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сучасний сайт з canvas анімацією</title>
+    <style>
+        /* Reset CSS */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Global styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f0f0;
+            color: #333;
+            overflow: hidden; /* Заборона прокрутки для створення заднього плану canvas */
+        }
+
+        /* Header styles */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: #444;
+            padding: 0.5rem 0;
+            text-align: center;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 1rem;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #f0f0f0;
+        }
+
+        /* Main content styles */
+        .container {
+            max-width: 960px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            position: relative; /* Для розміщення canvas у відношенні до контейнера */
+            z-index: 1; /* Підняття вмісту над canvas */
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .card h2 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Canvas styles */
+        canvas {
+            position: fixed; /* Фіксована позиція, щоб займати весь вікно */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Розміщення canvas на задньому плані */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Ласкаво просимо на сучасний сайт з canvas анімацією</h1>
+    <p>Де розкривається майстерність HTML, CSS та JavaScript</p>
+</header>
+<nav>
+    <ul>
+        <li><a href="#">Головна</a></li>
+        <li><a href="#">Про нас</a></li>
+        <li><a href="#">Послуги</a></li>
+        <li><a href="#">Контакти</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <div class="card">
+        <h2>Про нас</h2>
+        <p>Ми - команда професіоналів, які працюють у сфері веб-розробки з більш ніж 10 років. Наша місія - створювати вражаючі та ефективні веб-сайти для наших клієнтів.</p>
+    </div>
+    <div class="card">
+        <h2>Послуги</h2>
+        <p>Надаємо повний спектр послуг з веб-розробки, включаючи розробку веб-сайтів, оптимізацію для пошукових систем (SEO), інтерактивні додатки та багато іншого.</p>
+    </div>
+    <div class="card">
+        <h2>Контакти</h2>
+        <p>Маєте питання або потребуєте консультації? Зв'яжіться з нами за адресою <a href="mailto:info@example.com">info@example.com</a> або за номером телефону +123456789.</p>
+    </div>
+</div>
+<footer>
+    <p>&copy; 2024 Сучасний сайт з canvas анімацією. Усі права захищені.</p>
+</footer>
+
+<canvas id="bgCanvas"></canvas> <!-- Елемент canvas для анімації -->
+
+<script>
+    // JavaScript для анімації на canvas
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Встановлення розміру canvas на весь розмір вікна
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Функція для малювання сердечок
+    function drawHeart(x, y, size) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x + size / 2, y - size, x + size * 1.5, y + size / 3, x, y + size);
+        ctx.bezierCurveTo(x - size * 1.5, y + size / 3, x - size / 2, y - size, x, y);
+        ctx.fillStyle = '#ff7f50'; // Помаранчевий колір
+        ctx.fill();
+    }
+
+    // Масив для зберігання параметрів сердечок
+    const hearts = [];
+
+    // Додавання сердечок до масиву
+    for (let i = 0; i < 30; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const size = Math.random() * 20 + 10; // Випадковий розмір сердечка
+        hearts.push({ x, y, size });
+    }
+
+    // Анімація: малюємо і переміщуємо сердечка
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Очистка canvas
+
+        // Переміщення і малювання сердечок
+        hearts.forEach(heart => {
+            heart.y += 1; // Зміщення вниз
+            if (heart.y > canvas.height) { // Переміщення вгору при досягненні краю
+                heart.y = 0;
+                heart.x = Math.random() * canvas.width; // Зміна позиції по x
+            }
+            drawHeart(heart.x, heart.y, heart.size);
+        });
+
+        requestAnimationFrame(animate); // Рекурсивний виклик для анімації
+    }
+
+    animate(); // Початок анімації
+</script>
+</body>
+</html>
